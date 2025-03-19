@@ -12,6 +12,7 @@ let userService = {
     // ^----------------------------------------------------------------------------------------------------------------
     login: async (req, res, next) => {
         let { username, password } = req.body;
+        
         try {
             if (username && password) {
                 const pool = await getPool();
@@ -42,7 +43,8 @@ let userService = {
                                     userId: user.userId,
                                     username: user.username,
                                     role: user.role,
-                                    tokenExpiration: 5 * 24 * 60 * 60
+                                    tokenExpiration: 5 * 24 * 60 * 60,
+                                    token: token
                                 }
                             });
                         } catch (error) {

@@ -18,6 +18,7 @@
     "express": "^4.21.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
     "mysql2": "^3.13.0",
     "nodemon": "^3.1.9",
     "svg-captcha": "^1.4.0"
