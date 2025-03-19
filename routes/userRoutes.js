@@ -11,6 +11,8 @@ router.use("/logout", logout);
 router.post("/login", userService.login);
 router.post("/registration", userService.registration);
 router.get("/users/:userId", userService.userDetailById);
+router.get("/users", userService.users);
 router.get("/captcha", userService.captcha);
+
 
 module.exports = router

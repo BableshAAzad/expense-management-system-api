@@ -12,7 +12,7 @@ let userService = {
     // ^----------------------------------------------------------------------------------------------------------------
     login: async (req, res, next) => {
         let { username, password } = req.body;
-        
+
         try {
             if (username && password) {
                 const pool = await getPool();
@@ -169,6 +169,23 @@ let userService = {
             // captcha.text = CryptoJS.AES.encrypt(JSON.stringify(captcha.text), 'svgcaptcha_key').toString();
             // res.json(captcha);
         } catch (error) {
+            res.status(400).send({ error: error.message });
+        }
+    },
+    // ^----------------------------------------------------------------------------------------------------------------
+    users: async (req, res, next) => {
+        try {
+            const pool = await getPool();
+            let query = USER_QUERY.getAllUsersQuery();
+            const [result] = await pool.promise().query(query);
+            let users = result.map(user => {
+                let temp = { ...user, createdDate: format('yyyy-MM-dd hh:mm:ss', new Date(user.createdDate)) }
+                return temp
+            })
+
+            res.status(200).send(users)
+        } catch (error) {
+            console.log("error occurred during fetch users : ", error);
             res.status(400).send({ error: error.message });
         }
     },

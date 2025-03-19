@@ -44,6 +44,20 @@ module.exports.findUserInfoByUserIdQuery = function () {
             ;`;
 }
 
+module.exports.getAllUsersQuery = function () {
+    return `SELECT
+                userId,
+                email,
+                username,
+                role,
+                createdDate
+            FROM
+                users
+            WHERE 
+                deleteFlag = 'N'
+            ;`;
+}
+
 
 // CREATE TABLE lmtdb_v2.users (
 //     userId BIGINT AUTO_INCREMENT PRIMARY KEY,
