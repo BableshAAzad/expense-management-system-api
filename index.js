@@ -2,6 +2,8 @@ const express = require('express');
 require('dotenv').config();
 let userRoutes = require("./routes/userRoutes.js")
 let cors = require("cors");
+var morgan = require('morgan');
+const startupDebugger = require('debug')('app:startup');
 // let fileRoutes = require("./routes/fileRoutes.js")
 // let fileProcess = require("./services/fileProcess.js")
 
@@ -27,6 +29,13 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Content-Disposition'], // Add any headers you want to expose
 }));
+
+if (app.get('env') === 'development') {
+  app.use(morgan('dev'));//Not use in production
+  //console.log('Morgan Enabled');
+  startupDebugger('Morgan Enabled');
+
+}
 
 // * define all routes
 app.use("/ems/api", userRoutes);
