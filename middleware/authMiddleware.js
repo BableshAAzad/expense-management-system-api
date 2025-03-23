@@ -32,7 +32,7 @@ const checkUserAuth = async (req, res, next) => {
                 let user = result[0];
 
                 if (!user) {
-                    return res.status(404).send({ error: "Invalid token->->->->" });
+                    return res.status(404).send({ error: "Invalid token, season expired" });
                 }
                 req.user = {
                     userId: user.userId,
