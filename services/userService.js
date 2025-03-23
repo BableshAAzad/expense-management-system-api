@@ -6,13 +6,15 @@ let { usernameGenerate, getPool } = require("./common.js");
 const CryptoJS = require("crypto-js");
 let format = require('date-format');
 var svgCaptcha = require('svg-captcha');
+let userValidator = require("../validator/userValidator.js")
 
 
 let userService = {
     // ^----------------------------------------------------------------------------------------------------------------
     login: async (req, res, next) => {
         let { username, password } = req.body;
-        
+        // console.log("-----------9999999999----------login-------------");
+        // console.log("password : ", password);
         try {
             if (username && password) {
                 const pool = await getPool();
@@ -114,13 +116,13 @@ let userService = {
                             const [insertResult] = await pool.promise().query(saveQuery);
 
                             if (insertResult.affectedRows === 1) {
-                                res.status(201).send({ message: "Registration successfully done" });
+                                res.status(201).send({ message: `Registration successfully done, Username : ${username}` });
                             } else {
                                 res.status(500).send({ error: "Data insertion failed" });
                             }
                         } catch (error) {
                             console.log(error);
-                            res.status(500).send({ error: "Unable to Register" });
+                            res.status(500).send({ error: error.message || "Unable to Register" });
                         }
                     } else {
                         res.status(400).send({ error: "Password and Confirm Password don't match" });
@@ -135,7 +137,7 @@ let userService = {
         }
     },
     // ^----------------------------------------------------------------------------------------------------------------
-    userDetailById: async (req, res, next) => {
+    getUserDetailById: async (req, res, next) => {
         let { userId } = req.params;
         // Validate `userId`
         const user_Id = parseInt(userId, 10);
@@ -170,6 +172,71 @@ let userService = {
             // res.json(captcha);
         } catch (error) {
             res.status(400).send({ error: error.message });
+        }
+    },
+    // ^----------------------------------------------------------------------------------------------------------------
+    users: async (req, res, next) => {
+        try {
+            const pool = await getPool();
+            let query = USER_QUERY.getAllUsersQuery();
+            const [result] = await pool.promise().query(query);
+            let users = result.map(user => {
+                let temp = { ...user, createdDate: format('yyyy-MM-dd hh:mm:ss', new Date(user.createdDate)) }
+                return temp
+            })
+
+            res.status(200).send(users)
+        } catch (error) {
+            console.log("error occurred during fetch users : ", error);
+            res.status(400).send({ error: error.message });
+        }
+    },
+    // ^----------------------------------------------------------------------------------------------------------------
+    deleteUserById: async (req, res, next) => {
+        let { user } = req;
+        let { deleteUserId } = req.params;
+
+        const { error } = userValidator.userForDelete({
+            deleteUserId: deleteUserId
+        });
+        if (error) {
+            res.status(400).send({ error: `Validation Error: ${error.details[0].message}` });
+            return;
+        }
+        try {
+            const pool = await getPool();
+
+            let query = USER_QUERY.findUserInfoByUserIdQuery();
+            const [result] = await pool.promise().query(query, [deleteUserId]);
+            let deleteUser = result[0];
+
+            if (deleteUser) {
+                // updated User object
+                const deleteUserObj = {
+                    deletedDate: format('yyyy-MM-dd hh:mm:ss', new Date()),
+                    deleteFlag: "Y",
+                    deletedBy: user.userId,
+                }
+                let condition = `userId = ${deleteUserId}`
+
+                // Generate the update query
+                const updateQuery = COMMON_QUERY.updateDataQuery('users', deleteUserObj, condition);
+
+                // Execute the query using your MySQL pool (assuming pool is already configured)
+                const [updateResult] = await pool.promise().query(updateQuery);
+
+                // Check if the row was updated
+                if (updateResult.affectedRows === 1) {
+                    res.status(200).send({ message: "User deleted successfully" });
+                } else {
+                    res.status(500).send({ error: "Failed to delete user" });
+                }
+            } else {
+                res.status(400).send({ error: "Invalid delete User Id" });
+            }
+        } catch (error) {
+            console.log("error during fetch user Info : ", error);
+            return res.status(400).send({ error: error.message });
         }
     },
     // ^----------------------------------------------------------------------------------------------------------------

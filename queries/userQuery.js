@@ -44,10 +44,24 @@ module.exports.findUserInfoByUserIdQuery = function () {
             ;`;
 }
 
+module.exports.getAllUsersQuery = function () {
+    return `SELECT
+                userId,
+                email,
+                username,
+                role,
+                createdDate
+            FROM
+                users
+            WHERE 
+                deleteFlag = 'N'
+            ;`;
+}
 
-// CREATE TABLE lmtdb_v2.users (
+
+// CREATE TABLE expense_management_system.users (
 //     userId BIGINT AUTO_INCREMENT PRIMARY KEY,
-//     email VARCHAR(200) NOT NULL UNIQUE,
+//     email VARCHAR(200) NOT NULL,
 //     username VARCHAR(50) NOT NULL UNIQUE,
 //     password VARCHAR(150) NOT NULL,
 //     termAndCondition BOOLEAN NULL,
@@ -57,11 +71,12 @@ module.exports.findUserInfoByUserIdQuery = function () {
 //     modifiedDate DATETIME NULL,
 //     modifiedBy INT NULL,
 //     deleteFlag CHAR(1) NOT NULL,
-//     deletedBy INT NULL
+//     deletedBy INT NULL,
+//     deletedDate DATETIME NULL
 // );
 
 
-// CREATE TABLE lmtdb_v2.files (
+// CREATE TABLE expense_management_system.files (
 //     fileId BIGINT AUTO_INCREMENT PRIMARY KEY,
 //     fileName VARCHAR(200) NOT NULL,
 //     createdBy INT NULL,
@@ -72,7 +87,7 @@ module.exports.findUserInfoByUserIdQuery = function () {
 //     deletedBy INT NULL
 // );
 
-// CREATE TABLE lmtdb_v2.contents (
+// CREATE TABLE expense_management_system.contents (
 //     contentId BIGINT AUTO_INCREMENT PRIMARY KEY,
 //     content LONGTEXT NOT NULL,
 //     createdBy INT NULL,
