@@ -61,7 +61,7 @@ module.exports.getAllUsersQuery = function () {
 
 // CREATE TABLE expense_management_system.users (
 //     userId BIGINT AUTO_INCREMENT PRIMARY KEY,
-//     email VARCHAR(200) NOT NULL UNIQUE,
+//     email VARCHAR(200) NOT NULL,
 //     username VARCHAR(50) NOT NULL UNIQUE,
 //     password VARCHAR(150) NOT NULL,
 //     termAndCondition BOOLEAN NULL,

@@ -122,7 +122,7 @@ let userService = {
                             }
                         } catch (error) {
                             console.log(error);
-                            res.status(500).send({ error: "Unable to Register" });
+                            res.status(500).send({ error: error.message || "Unable to Register" });
                         }
                     } else {
                         res.status(400).send({ error: "Password and Confirm Password don't match" });
