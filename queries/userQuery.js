@@ -55,6 +55,8 @@ module.exports.getAllUsersQuery = function () {
                 users
             WHERE 
                 deleteFlag = 'N'
+                AND
+                role = ?
             ;`;
 }
 

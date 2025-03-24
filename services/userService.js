@@ -176,10 +176,11 @@ let userService = {
     },
     // ^----------------------------------------------------------------------------------------------------------------
     users: async (req, res, next) => {
+        let { user } = req;
         try {
             const pool = await getPool();
             let query = USER_QUERY.getAllUsersQuery();
-            const [result] = await pool.promise().query(query);
+            const [result] = await pool.promise().query(query, [user.role]);
             let users = result.map(user => {
                 let temp = { ...user, createdDate: format('yyyy-MM-dd hh:mm:ss', new Date(user.createdDate)) }
                 return temp
