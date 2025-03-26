@@ -11,11 +11,11 @@ router.use("/logout", logout);
 //& Protected Routes
 router.delete("/users/:deleteUserId", checkUserAuth, userService.deleteUserById);
 router.get("/users", checkUserAuth, userService.users);
+router.get("/users/:userId",checkUserAuth, userService.getUserDetailById);
 
 // * pubic routes
 router.post("/login", userService.login);
 router.post("/registration", userService.registration);
-router.get("/users/:userId", userService.getUserDetailById);
 router.get("/captcha", userService.captcha);
 
 
