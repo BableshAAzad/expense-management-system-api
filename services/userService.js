@@ -154,7 +154,7 @@ let userService = {
             if (user) {
                 res.status(200).send(user)
             } else {
-                res.status(400).send({ error: "Invalid userId validate" });
+                res.status(400).send({ error: "Invalid userId" });
             }
         } catch (error) {
             console.log("error during fetch user Info : ", error);

@@ -68,14 +68,29 @@ module.exports.getAllUsersQuery = function () {
 //     password VARCHAR(150) NOT NULL,
 //     termAndCondition BOOLEAN NULL,
 //     role VARCHAR(100) NOT NULL,
-//     createdBy INT NULL,
+//     createdBy BIGINT NULL,
 //     createdDate DATETIME NULL,
 //     modifiedDate DATETIME NULL,
-//     modifiedBy INT NULL,
+//     modifiedBy BIGINT NULL,
 //     deleteFlag CHAR(1) NOT NULL,
-//     deletedBy INT NULL,
+//     deletedBy BIGINT NULL,
 //     deletedDate DATETIME NULL
 // );
+
+// CREATE TABLE expense_management_system.userProfileImage (
+//     profileImageId BIGINT AUTO_INCREMENT PRIMARY KEY,
+//     userId BIGINT NOT NULL,
+//     fileName VARCHAR(200) NOT NULL,
+//     createdBy BIGINT NOT NULL,
+//     createdDate DATETIME NOT NULL,
+//     modifiedBy BIGINT NULL,
+//     modifiedDate DATETIME NULL,
+//     deleteFlag CHAR(1) NOT NULL,
+//     deletedDate DATETIME NULL,
+//     deletedBy BIGINT NULL,
+//     CONSTRAINT fk_user FOREIGN KEY (userId) REFERENCES users(userId)
+// );
+
 
 
 // CREATE TABLE expense_management_system.files (
@@ -85,6 +100,7 @@ module.exports.getAllUsersQuery = function () {
 //     createdDate DATETIME NULL,
 //     modifiedDate DATETIME NULL,
 //     modifiedBy INT NULL,
+//     deletedDate DATETIME NULL,
 //     deleteFlag CHAR(1) NOT NULL,
 //     deletedBy INT NULL
 // );
