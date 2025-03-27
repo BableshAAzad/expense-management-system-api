@@ -8,7 +8,6 @@ let format = require('date-format');
 var svgCaptcha = require('svg-captcha');
 let userValidator = require("../validator/userValidator.js")
 
-
 let userService = {
     // ^----------------------------------------------------------------------------------------------------------------
     login: async (req, res, next) => {
