@@ -77,7 +77,7 @@ module.exports.getAllUsersQuery = function () {
 //     deletedDate DATETIME NULL
 // );
 
-// CREATE TABLE expense_management_system.userProfileImage (
+// CREATE TABLE expense_management_system.user_Profile_Image (
 //     profileImageId BIGINT AUTO_INCREMENT PRIMARY KEY,
 //     userId BIGINT NOT NULL,
 //     fileName VARCHAR(200) NOT NULL,

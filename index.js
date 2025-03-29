@@ -1,11 +1,12 @@
 const express = require('express');
 require('dotenv').config();
-let userRoutes = require("./routes/userRoutes.js")
 let cors = require("cors");
 var morgan = require('morgan');
 const startupDebugger = require('debug')('app:startup');
 // let fileRoutes = require("./routes/fileRoutes.js")
 // let fileProcess = require("./services/fileProcess.js")
+let userRoutes = require("./routes/userRoutes.js");
+let expenseRoutes = require("./routes/expenseRoutes.js");
 
 const app = express();
 const APP_PORT = process.env.APP_PORT || '3410';
@@ -39,6 +40,7 @@ if (app.get('env') === 'development') {
 
 // * define all routes
 app.use("/ems/api", userRoutes);
+app.use("/ems/api", expenseRoutes);
 
 // fileProcess(app); //& for get files
 
