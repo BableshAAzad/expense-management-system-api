@@ -60,6 +60,21 @@ module.exports.getAllUsersQuery = function () {
             ;`;
 }
 
+module.exports.findUserInfoByIdQuery = function () {
+    return `SELECT
+                userId,
+                email,
+                username,
+                role
+            FROM
+                users
+            WHERE 
+                deleteFlag = 'N'
+                AND
+                userId = ?
+;`;
+}
+
 
 // CREATE TABLE expense_management_system.users (
 //     userId BIGINT AUTO_INCREMENT PRIMARY KEY,

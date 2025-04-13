@@ -240,7 +240,54 @@ let userService = {
         }
     },
     // ^----------------------------------------------------------------------------------------------------------------
+    updateUserDetailById: async (req, res) => {
+        const { email, password } = req.body;
+        const { userId } = req.params;
+        try {
+            // Get the pool from the global pool function
+            const pool = await getPool();
+            const query = USER_QUERY.findUserInfoByIdQuery();
 
+            const [result] = await pool.promise().query(query, [userId]);
+            let user = result[0];
+
+            if (!user) {
+                res.status(400).send({ error: "User Id not exist 🤣" });
+            } else {
+                let updateUser;
+                if (email && password) {
+                    let passwordDecryption = CryptoJS.AES.decrypt(password, process.env.SECRET_KEY).toString(CryptoJS.enc.Utf8);
+                    // Hash password
+                    const salt = await bcrypt.genSalt(10);
+                    const hashedPassword = await bcrypt.hash(passwordDecryption, salt);
+                    updateUser = {
+                        email: email,
+                        password: hashedPassword,
+                    };
+                } else if (email && !password) {
+                    updateUser = {
+                        email: email,
+                    };
+                } else {
+                    return res.status(400).send({ error: "All fields are required 😡" });
+                }
+
+                const updateQuery = COMMON_QUERY.updateDataQuery("users", updateUser, `userId=${userId}`);
+                const [insertResult] = await pool.promise().query(updateQuery);
+
+                if (insertResult.affectedRows === 1) {
+                    res.status(200).send({ message: `User updated successfully done 😀` });
+                } else {
+                    res.status(500).send({ error: "Data Update failed 🥲" });
+                }
+            }
+        } catch (error) {
+            console.log("Error during update user info: ", error);
+            res.status(500).send({ error: error.message || error });
+        }
+    },
+    // ^----------------------------------------------------------------------------------------------------------------
+    
 }
 
 module.exports = userService;
