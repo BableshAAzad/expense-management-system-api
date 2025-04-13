@@ -13,6 +13,6 @@ router.post("/expense/categories", checkUserAuth, expenseService.addExpenseCateg
 router.get("/expense/categories", checkUserAuth, expenseService.getAllExpenseCategories);
 router.put("/expense/categories", checkUserAuth, expenseService.updateExpenseCategory);
 router.get("/expense/categories/:expenseCategoryId", checkUserAuth, expenseService.getExpenseCategoryById);
-router.delete("/expense/categories/:expenseCategoryId", checkUserAuth, expenseService.deleteExpenseCategoryById);
+// router.delete("/expense/categories/:expenseCategoryId", checkUserAuth, expenseService.deleteExpenseCategoryById);
 
 module.exports = router
