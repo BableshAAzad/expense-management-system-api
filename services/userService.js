@@ -2,11 +2,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 let USER_QUERY = require("../queries/userQuery.js");
 let COMMON_QUERY = require("../queries/commonQuery.js")
-let { usernameGenerate, getPool } = require("./common.js");
+let { usernameGenerate, getPool, syncMoveFile } = require("./common.js");
 const CryptoJS = require("crypto-js");
 let format = require('date-format');
 var svgCaptcha = require('svg-captcha');
-let userValidator = require("../validator/userValidator.js")
+let userValidator = require("../validator/userValidator.js");
+
+const path = require('path');
+const sourceDir = path.join(__dirname, '../');
 
 let userService = {
     // ^----------------------------------------------------------------------------------------------------------------
@@ -287,7 +290,66 @@ let userService = {
         }
     },
     // ^----------------------------------------------------------------------------------------------------------------
-    
+    // TODO Profile photo upload under process
+    updateUserPhotoById: async (req, res) => {
+        const { url, id, profileImageId } = req.body;
+        const { user } = req;
+        let user_profile_image = {
+            fileName: null,
+        };
+        try {
+            // Get the pool from the global pool function
+            const pool = await getPool();
+            const query = USER_QUERY.findUserProfileImageByIdQuery();
+
+            const [result] = await pool.promise().query(query, [user.userId]);
+            let user_profile_image_data = result[0];
+
+            let fileName = syncMoveFile({ url: url, id: id }, "user", user.userId, "user", sourceDir, "image");
+
+            if (fileName && typeof fileName === "string") {
+                user_profile_image.fileName = fileName;
+            } else {
+                console.log(fileName)
+            }
+
+            if (!user_profile_image_data && user_profile_image.fileName) {
+                // Save the user in the database
+                const saveQuery = COMMON_QUERY.saveDataQuery("user_profile_image", {
+                    ...user_profile_image,
+                    userId: user.userId,
+                    deleteFlag: 'N',
+                    createdBy: user.userId,
+                    createdDate: format('yyyy-MM-dd hh:mm:ss', new Date()),
+                });
+                const [insertResult] = await pool.promise().query(saveQuery);
+
+                if (insertResult.affectedRows === 1) {
+                    res.status(201).send({ message: `Profile photo saved successfully done` });
+                } else {
+                    res.status(500).send({ error: "Profile photo update failed" });
+                }
+            } else if (user_profile_image_data && user_profile_image.fileName) {
+                const updateQuery = COMMON_QUERY.updateDataQuery("user_profile_image", {
+                    ...user_profile_image,
+                    modifiedBy: user.userId,
+                    modifiedDate: format('yyyy-MM-dd hh:mm:ss', new Date()),
+                }, `userId=${user.userId}`);
+                const [insertResult] = await pool.promise().query(updateQuery);
+
+                if (insertResult.affectedRows === 1) {
+                    res.status(200).send({ message: `User profile photo updated successfully done 😀` });
+                } else {
+                    res.status(500).send({ error: "Profile photo Update failed 🥲" });
+                }
+            } else {
+                res.status(500).send({ error: "Profile photo Update failed 🥲" });
+            }
+        } catch (error) {
+            console.log("Error during update user profile photo: ", error);
+            res.status(500).send({ error: error.message || error });
+        }
+    },
 }
 
 module.exports = userService;

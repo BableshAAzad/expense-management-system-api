@@ -75,6 +75,19 @@ module.exports.findUserInfoByIdQuery = function () {
 ;`;
 }
 
+module.exports.findUserProfileImageByIdQuery = function () {
+    return `SELECT
+                userId,
+                fileName
+            FROM
+                user_profile_image
+            WHERE 
+                deleteFlag = 'N'
+                AND
+                userId = ?
+;`;
+}
+
 
 // CREATE TABLE expense_management_system.users (
 //     userId BIGINT AUTO_INCREMENT PRIMARY KEY,

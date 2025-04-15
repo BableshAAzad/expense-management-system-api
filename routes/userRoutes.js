@@ -13,6 +13,7 @@ router.delete("/users/:deleteUserId", checkUserAuth, userService.deleteUserById)
 router.get("/users", checkUserAuth, userService.users);
 router.get("/users/:userId",checkUserAuth, userService.getUserDetailById);
 router.put("/users/:userId",checkUserAuth, userService.updateUserDetailById);
+router.post("/users/:userId/update-photo",checkUserAuth, userService.updateUserPhotoById);
 
 
 // * pubic routes
