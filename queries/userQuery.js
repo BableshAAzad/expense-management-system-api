@@ -78,7 +78,8 @@ module.exports.findUserInfoByIdQuery = function () {
 module.exports.findUserProfileImageByIdQuery = function () {
     return `SELECT
                 userId,
-                fileName
+                fileName,
+                oldImages
             FROM
                 user_profile_image
             WHERE 
