@@ -292,8 +292,18 @@ let userService = {
     // ^----------------------------------------------------------------------------------------------------------------
     // TODO Profile photo upload under process
     updateUserPhotoById: async (req, res) => {
-        const { url, id, profileImageId } = req.body;
+        const { url, id } = req.body;
         const { user } = req;
+
+        const { error } = userValidator.userPhotoValidator({
+            url: url,
+            id: id
+        });
+        if (error) {
+            res.status(400).send({ error: `Validation Error: ${error.details[0].message}` });
+            return;
+        }
+
         let user_profile_image = {
             fileName: null,
         };
@@ -334,16 +344,18 @@ let userService = {
                     ...user_profile_image,
                     modifiedBy: user.userId,
                     modifiedDate: format('yyyy-MM-dd hh:mm:ss', new Date()),
+                    oldImages: `${user_profile_image_data.fileName},${user_profile_image_data.oldImages}`
                 }, `userId=${user.userId}`);
                 const [insertResult] = await pool.promise().query(updateQuery);
 
-                if (insertResult.affectedRows === 1) {
+                if (insertResult.affectedRows > 0) {
                     res.status(200).send({ message: `User profile photo updated successfully done 😀` });
                 } else {
                     res.status(500).send({ error: "Profile photo Update failed 🥲" });
                 }
-            } else {
-                res.status(500).send({ error: "Profile photo Update failed 🥲" });
+            }
+            else {
+                res.status(500).send({ error: "Profile photo Update failed try again 😭" });
             }
         } catch (error) {
             console.log("Error during update user profile photo: ", error);
