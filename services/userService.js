@@ -109,7 +109,7 @@ let userService = {
                                 role: "admin",
                                 username: username,  // Ensure username is part of the new user object
                                 createdDate: format('yyyy-MM-dd hh:mm:ss', new Date()),
-                                deleteFlag: "N"
+                                deleteFlag: 0
                             };
 
                             // Save the user in the database
