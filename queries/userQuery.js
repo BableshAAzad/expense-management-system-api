@@ -31,16 +31,20 @@ module.exports.findUserInfoByEmailQuery = function () {
 
 module.exports.findUserInfoByUserIdQuery = function () {
     return `SELECT
-                userId,
-                username,
-                role,
-                email
+                u.userId,
+                u.username,
+                u.role,
+                u.email,
+                upi.fileName
             FROM
-                users
+                users u
+            LEFT JOIN
+                user_profile_image upi
+            ON u.userId = upi.userId AND upi.deleteFlag = 'N'
             WHERE 
-                deleteFlag = 'N'  
+                u.deleteFlag = 'N'  
                 AND
-                userId = ?
+                u.userId = ?
             ;`;
 }
 

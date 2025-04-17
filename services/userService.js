@@ -290,7 +290,6 @@ let userService = {
         }
     },
     // ^----------------------------------------------------------------------------------------------------------------
-    // TODO Profile photo upload under process
     updateUserPhotoById: async (req, res) => {
         const { url, id } = req.body;
         const { user } = req;
