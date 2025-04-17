@@ -66,7 +66,7 @@ let filesProcessService = {
             response.status(201).send({ url: `/${uploadPath}/${formattedFilename}`, id: randomId, Sub_Title: extractFilenameOnly(request.file.filename, fileType) });
         } catch (error) {
             console.log("Error occurred during image File upload in temp : ", error)
-            response.status(500).send({ message: error.message || error });
+            response.status(500).send({ error: error.message || error });
         }
     },
     //^ -----------------------------------------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ let filesProcessService = {
             response.status(201).send({ url: `/${uploadPath}/${formattedFilename}`, id: randomId, Sub_Title: extractFilenameOnly(request.file.filename, fileType) });
         } catch (error) {
             console.log("Error occurred during pdf File upload in temp : ", error)
-            response.status(500).send({ message: error.message || error });
+            response.status(500).send({ error: error.message || error });
         }
     },
     //^ -----------------------------------------------------------------------------------------------------------------
