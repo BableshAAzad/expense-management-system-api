@@ -6,7 +6,7 @@ module.exports.findExpenseCategoryByCategoryNameQuery = function () {
             FROM
                 expense_categories
             WHERE 
-                deleteFlag = 'N'  
+                deleteFlag = 0
                 AND
                 expenseCategoryName = ?
             ;`;
@@ -19,7 +19,7 @@ module.exports.findExpenseCategoryByIdQuery = function () {
             FROM
                 expense_categories
             WHERE 
-                deleteFlag = 'N'  
+                deleteFlag = 0
                 AND
                 expenseCategoryId = ?
             ;`;
@@ -32,7 +32,7 @@ module.exports.getAllExpenseCategoriesQuery = function () {
             FROM
                 expense_categories
             WHERE 
-                deleteFlag = 'N'  
+                deleteFlag = 0
             ;`;
 }
 
@@ -43,10 +43,10 @@ module.exports.getAllExpenseCategoriesQuery = function () {
 //     expenseCategoryId BIGINT AUTO_INCREMENT PRIMARY KEY,
 //     expenseCategoryName VARCHAR(200) NOT NULL UNIQUE,
 //     createdBy BIGINT NOT NULL,
-//     createdDate DATETIME NOT NULL,
+//     createdDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 //     modifiedBy BIGINT NULL,
 //     modifiedDate DATETIME NULL,
-//     deleteFlag CHAR(1) NOT NULL,
+//     deleteFlag TINYINT(1) NOT NULL,
 //     deletedDate DATETIME NULL,
 //     deletedBy BIGINT NULL
 // );

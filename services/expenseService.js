@@ -31,7 +31,7 @@ let expenseService = {
                         expenseCategoryName: expenseCategoryName,
                         createdBy: user.userId,
                         createdDate: format('yyyy-MM-dd hh:mm:ss', new Date()),
-                        deleteFlag: "N"
+                        deleteFlag: 0
                     };
 
                     // Save the new category in the database

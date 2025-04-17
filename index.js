@@ -7,6 +7,7 @@ let fileProcessRoutes = require("./routes/fileProcessRoutes.js");
 let fileProcess = require("./services/fileProcess.js");
 let userRoutes = require("./routes/userRoutes.js");
 let expenseRoutes = require("./routes/expenseRoutes.js");
+let moneyRoutes = require("./routes/moneyRoutes.js");
 
 
 const app = express();
@@ -43,7 +44,8 @@ if (app.get('env') === 'development') {
 // * define all routes
 app.use("/ems/api", userRoutes);
 app.use("/ems/api", expenseRoutes);
-app.use("/ems/api", fileProcessRoutes)
+app.use("/ems/api", fileProcessRoutes);
+app.use("/ems/api/money", moneyRoutes);
 
 fileProcess(app); //& for get files
 
