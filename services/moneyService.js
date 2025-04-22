@@ -1,9 +1,11 @@
 let MONEY_QUERY = require("../queries/moneyQuery.js");
 let COMMON_QUERY = require("../queries/commonQuery.js");
+let { getPool } = require("./common.js");
 let sourceOfMoneyCategoryValidator = require("../validator/moneyValidator.js");
+let format = require('date-format');
+
 
 let moneyService = {
-
     // ^----------------------------------------------------------------------------------------------------------------
     // TODO under process
     addMoney: async (req, res) => {
@@ -59,6 +61,14 @@ let moneyService = {
         let { sourceOfMoneyCategoryName } = req.body;
         let { user } = req;
 
+        const { error } = sourceOfMoneyCategoryValidator.sourceOfMoneyCategoryForSave({
+            sourceOfMoneyCategoryName: sourceOfMoneyCategoryName
+        });
+        if (error) {
+            res.status(400).send({ error: `Validation Error: ${error.details[0].message}` });
+            return;
+        }
+
         try {
             const pool = await getPool();
             let query = MONEY_QUERY.findSourceOfMoneyCategoryByCategoryNameQuery();
@@ -67,16 +77,9 @@ let moneyService = {
             if (sourceOfMoneyCategory) {
                 return res.status(400).send({ error: "Source of money Category already exist" });
             } else {
-                const { error } = sourceOfMoneyCategoryValidator.sourceOfMoneyCategoryForSave({
-                    sourceOfMoneyCategoryName: sourceOfMoneyCategoryName
-                });
-                if (error) {
-                    res.status(400).send({ error: `Validation Error: ${error.details[0].message}` });
-                    return;
-                }
                 try {
                     // new Source of money category object
-                    const newSourceOfMoneyCategory = {
+                    let newSourceOfMoneyCategory = {
                         sourceOfMoneyCategoryName: sourceOfMoneyCategoryName,
                         createdBy: user.userId,
                         createdDate: format('yyyy-MM-dd hh:mm:ss', new Date()),
@@ -99,13 +102,112 @@ let moneyService = {
                 }
             }
         } catch (error) {
-            console.log("error during fetch Source of money category Info : ", error);
+            console.log("error during fetch Source of money source category Info : ", error);
             return res.status(400).send({ error: error.message });
         }
     },
     // ^----------------------------------------------------------------------------------------------------------------
+    getAllSourceOfMoneyCategories: async (req, res, next) => {
+        try {
+            const pool = await getPool();
+            let query = MONEY_QUERY.getAllSourceOfTheMoneyCategoriesQuery();
+            const [result] = await pool.promise().query(query);
+
+            res.status(200).send(result)
+        } catch (error) {
+            console.log("error occurred during fetch expense categories : ", error);
+            res.status(400).send({ error: error.message });
+        }
+    },
     // ^----------------------------------------------------------------------------------------------------------------
+    updateSourceOfMoneyCategory: async (req, res, next) => {
+        const { sourceOfMoneyCategoryId, sourceOfMoneyCategoryName } = req.body;
+        const { error } = sourceOfMoneyCategoryValidator.sourceOfMoneyCategoryForUpdate({
+            sourceOfMoneyCategoryId: sourceOfMoneyCategoryId,
+            sourceOfMoneyCategoryName: sourceOfMoneyCategoryName
+        });
+        if (error) {
+            res.status(400).send({ error: `Validation Error: ${error.details[0].message}` });
+            return;
+        }
+        let { user } = req;
+        try {
+            const pool = await getPool();
+            let query = MONEY_QUERY.findSourceOfMoneyCategoryByIdQuery();
+            const [result] = await pool.promise().query(query, [sourceOfMoneyCategoryId]);
+            let sourceOfMoneyCategory = result[0];
+            if (sourceOfMoneyCategory) {
+                let updatedSourceOfMoneyCategory = {
+                    sourceOfMoneyCategoryName: sourceOfMoneyCategoryName || sourceOfMoneyCategory.sourceOfMoneyCategoryName,
+                    modifiedBy: user.userId,
+                    modifiedDate: format('yyyy-MM-dd hh:mm:ss', new Date()),
+                };
+
+                const saveQuery = COMMON_QUERY.updateDataQuery(
+                    "source_of_money_categories",
+                    updatedSourceOfMoneyCategory,
+                    `sourceOfMoneyCategoryId=${sourceOfMoneyCategoryId}`
+                );
+
+                const [updateResult] = await pool.promise().query(saveQuery);
+
+                if (updateResult.affectedRows === 1) {
+                    return res.status(200).send({ message: `Source of money Category updated` });
+                } else {
+                    return res.status(500).send({ error: "Data update failed... try again" });
+                }
+            } else {
+                return res.status(400).send({ error: "Source of money Category not exist" });
+            }
+        } catch (error) {
+            console.log("error during update Source of money source category: ", error);
+            return res.status(400).send({ error: error.message });
+        }
+    },
     // ^----------------------------------------------------------------------------------------------------------------
+    deleteSourceOfMoneyCategory: async (req, res, next) => {
+        const { sourceOfMoneyCategoryId } = req.params;
+        const { error } = sourceOfMoneyCategoryValidator.sourceOfMoneyCategoryForDelete({
+            sourceOfMoneyCategoryId: sourceOfMoneyCategoryId,
+        });
+        if (error) {
+            res.status(400).send({ error: `Validation Error: ${error.details[0].message}` });
+            return;
+        }
+        let { user } = req;
+        try {
+            const pool = await getPool();
+            let query = MONEY_QUERY.findSourceOfMoneyCategoryByIdQuery();
+            const [result] = await pool.promise().query(query, [sourceOfMoneyCategoryId]);
+            let sourceOfMoneyCategory = result[0];
+            if (sourceOfMoneyCategory) {
+                let deleteSourceOfMoneyCategory = {
+                    deletedBy: user.userId,
+                    deletedDate: format('yyyy-MM-dd hh:mm:ss', new Date()),
+                    deleteFlag: 0
+                };
+
+                const saveQuery = COMMON_QUERY.updateDataQuery(
+                    "source_of_money_categories",
+                    deleteSourceOfMoneyCategory,
+                    `sourceOfMoneyCategoryId=${sourceOfMoneyCategoryId}`
+                );
+
+                const [deleteResult] = await pool.promise().query(saveQuery);
+
+                if (deleteResult.affectedRows === 1) {
+                    return res.status(200).send({ message: `Source of money Category deleted` });
+                } else {
+                    return res.status(500).send({ error: "Data delete failed... try again" });
+                }
+            } else {
+                return res.status(400).send({ error: "Source of money Category not exist" });
+            }
+        } catch (error) {
+            console.log("error during delete Source of money source category: ", error);
+            return res.status(400).send({ error: error.message });
+        }
+    },
     // ^----------------------------------------------------------------------------------------------------------------
 
 }

@@ -4,13 +4,41 @@ module.exports.findSourceOfMoneyCategoryByCategoryNameQuery = function () {
                 sourceOfMoneyCategoryId,
                 sourceOfMoneyCategoryName
             FROM
-                expense_categories
+                source_of_money_categories
             WHERE 
                 deleteFlag = 0
                 AND
                 sourceOfMoneyCategoryName = ?
             ;`;
 }
+
+
+module.exports.findSourceOfMoneyCategoryByIdQuery = function () {
+    return `SELECT
+                sourceOfMoneyCategoryId,
+                sourceOfMoneyCategoryName
+            FROM
+                source_of_money_categories
+            WHERE 
+                deleteFlag = 0
+                AND
+                sourceOfMoneyCategoryId = ?
+            ;`;
+}
+
+module.exports.getAllSourceOfTheMoneyCategoriesQuery = function () {
+    return `
+        SELECT
+            sourceOfMoneyCategoryId,
+            sourceOfMoneyCategoryName
+        FROM
+            source_of_money_categories
+        WHERE 
+            deleteFlag = 0
+        ORDER BY 
+            sourceOfMoneyCategoryName ASC;
+    `;
+};
 
 
 // CREATE TABLE expense_management_system.source_of_money_categories (
@@ -24,3 +52,22 @@ module.exports.findSourceOfMoneyCategoryByCategoryNameQuery = function () {
 //     deletedDate DATETIME DEFAULT NULL,
 //     deletedBy BIGINT DEFAULT NULL
 // );
+
+
+/**
+ * TODO create table for money 
+ * 
+ * transactionId
+ * userId
+ * 
+ * sourceOfMoneyCategoryId
+ * increment
+ * 
+ * expenseCategoryId
+ * decrement
+ * 
+ * totalMoney
+ * transactionDate
+ * remark
+ * 
+ */
