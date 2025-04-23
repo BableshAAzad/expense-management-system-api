@@ -125,7 +125,6 @@ module.exports.findUserProfileImageByIdQuery = function () {
 // );
 
 
-
 // CREATE TABLE expense_management_system.files (
 //     fileId BIGINT AUTO_INCREMENT PRIMARY KEY,
 //     fileName VARCHAR(200) NOT NULL,
