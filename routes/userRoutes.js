@@ -10,12 +10,15 @@ router.use("/logout", logout);
 
 //& Protected Routes
 router.delete("/users/:deleteUserId", checkUserAuth, userService.deleteUserById);
+router.get("/users", checkUserAuth, userService.users);
+router.get("/users/:userId",checkUserAuth, userService.getUserDetailById);
+router.put("/users/:userId",checkUserAuth, userService.updateUserDetailById);
+router.post("/users/:userId/update-photo",checkUserAuth, userService.updateUserPhotoById);
+
 
 // * pubic routes
 router.post("/login", userService.login);
 router.post("/registration", userService.registration);
-router.get("/users/:userId", userService.getUserDetailById);
-router.get("/users", userService.users);
 router.get("/captcha", userService.captcha);
 
 
